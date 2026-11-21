@@ -23,7 +23,7 @@ namespace PirateQuest.Gameplay.Player
         public void Tick(float deltaTime, bool isGrounded, float horizontalSpeed, float verticalSpeed)
         {
             StateTime += deltaTime;
-            if (Current == PlayerState.Hurt || Current == PlayerState.Dead)
+            if (Current == PlayerState.Attack || Current == PlayerState.Throw || Current == PlayerState.Dash || Current == PlayerState.Hurt || Current == PlayerState.Dead)
             {
                 return;
             }

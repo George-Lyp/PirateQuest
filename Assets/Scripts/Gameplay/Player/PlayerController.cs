@@ -48,12 +48,12 @@ namespace PirateQuest.Gameplay.Player
         {
             isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-            rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+            rb.velocity = stateMachine.Current == PlayerState.Attack ? new Vector2(0, rb.velocity.y) : new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
             if (jumpRequested)
             {
                 jumpRequested = false;
-                if (isGrounded)
+                if (isGrounded && stateMachine.Current != PlayerState.Attack)
                 {
                     rb.velocity = new Vector2(rb.velocity.x, jumpForce);
                 }
@@ -71,11 +71,14 @@ namespace PirateQuest.Gameplay.Player
 
         private void FaceMoveDirection()
         {
+            if (stateMachine.Current == PlayerState.Attack)
+            {
+                return;
+            }
             if (Mathf.Abs(moveInput) < 0.01f)
             {
                 return;
             }
-
             Vector3 scale = transform.localScale;
             scale.x = Mathf.Sign(moveInput) * Mathf.Abs(scale.x);
             transform.localScale = scale;
@@ -88,6 +91,10 @@ namespace PirateQuest.Gameplay.Player
 
         public void OnJump(InputAction.CallbackContext context)
         {
+            if (!context.performed)
+            {
+                return;
+            }
             jumpRequested = true;
         }
 
